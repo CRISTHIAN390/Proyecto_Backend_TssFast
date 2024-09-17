@@ -1,0 +1,29 @@
+services:
+  app:
+    build: ./  # Construye la imagen usando el Dockerfile en el directorio actual
+    depends_on:
+      - mysql  # Asegura que el contenedor de MySQL se inicie antes que el contenedor de la aplicación
+    environment:
+      DB_HOST: mysql  # Nombre del servicio de MySQL, usado como host en la conexión
+      DB_PORT: 3306  # Puerto por defecto de MySQL
+      DB_DATABASE: bd_Maxfer_app  # Nombre de la base de datos
+      DB_USERNAME: root  # Usuario de la base de datos
+      DB_PASSWORD: "cristhian"  # Contraseña de la base de datos
+    ports:
+      - "4200:4200"  # Expone el puerto 4200 del contenedor al host (este debería ser el puerto que usa tu aplicación FastAPI)
+    restart: always  # Reinicia el contenedor automáticamente si falla
+
+  mysql:
+    image: mysql:latest  # Utiliza la última imagen oficial de MySQL
+    restart: always  # Reinicia el contenedor automáticamente si falla
+    environment:
+      MYSQL_ROOT_PASSWORD: cristhian  # Contraseña del usuario root
+      MYSQL_DATABASE: bd_Maxfer_app  # Nombre de la base de datos a crear
+    ports:
+      - "10500:3306"  # Expone el puerto 3306 del contenedor al puerto 10500 del host
+    networks:
+      - mynetwork  # Conecta el servicio de MySQL a la red personalizada
+
+networks:
+  mynetwork:
+    driver: bridge  # Utiliza el driver de red bridge para conectar los servicios
