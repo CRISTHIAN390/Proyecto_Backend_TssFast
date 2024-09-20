@@ -68,40 +68,46 @@ class LoginData(BaseModel):
 def login(login_data: LoginData):
     return users.login_users(login_data.email, login_data.password)
 
+
+
 # Crear un nuevo usuario
-@app.post("/users/")
+@app.post("/api/users/")
 def create_user(user: UserCreate):
     return users.create_user(user)
 
-# CLIENTES
+# Usuarios
 # Listar todos los users
-@app.get("/users/")
+@app.get("/api/users/")
 def read_users():
     return users.read_users()
 
-#listar clientes
-@app.get("/users/role/{user_id}")
+#listar usuario por rol
+@app.get("/api/users/role/{user_id}")
 def read_usersByRole(user_id: int):
     return users.read_usersByIdRole(user_id)
 
 # Obtener un user por su ID
-@app.get("/users/{client_id}")
-def select_user_by_id(client_id: int):
-    return users.select_user_by_id(client_id)
+@app.get("/api/users/{user_id}")
+def select_user_by_id(user_id: int):
+    return users.select_user_by_id(user_id)
 
 # Actualizar un user
-@app.put("/users/{client_id}")
-def update_user(client_id: int, user: UserCreate):
-    return users.update_user(client_id, user)
+@app.put("/api/users/{user_id}")
+def update_user(user_id: int, user: UserCreate):
+    return users.update_user(user_id, user)
 
-@app.put("/usersPassword/{client_id}")
-def update_user(client_id: int, user: UserCreate):
-    return users.update_user2(client_id, user)
+@app.put("/api/users/Password/{user_id}")
+def update_user(user_id: int, user: UserCreate):
+    return users.update_user2(user_id, user)
 
 # Eliminar un user
-@app.delete("/users/{client_id}")
-def delete_user(client_id: int):
-    return users.delete_user(client_id)
+@app.delete("/api/users/{user_id}")
+def delete_user(user_id: int):
+    return users.delete_user(user_id)
+
+
+
+
 
 
 # ROLES
