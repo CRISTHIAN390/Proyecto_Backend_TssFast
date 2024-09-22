@@ -149,10 +149,10 @@ if __name__ == "__main__":
     import uvicorn
     uvicorn.run(
       #  "main:app",
-        host="0.0.0.0",
+        host="127.0.0.1",
         port=4500,
         reload=True,  #Equivale a un debug
         ssl_keyfile="key.pem",
         ssl_certfile="cert.pem"
     )
-#Para ejecutar el proyecto :uvicorn main:app --reload --port 4500 --host 0.0.0.0 
+#Para ejecutar el proyecto :uvicorn main:app --reload --port 4500 --host 127.0.0.1 
