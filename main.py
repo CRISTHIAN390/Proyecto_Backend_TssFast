@@ -2,17 +2,18 @@ import os
 from fastapi import FastAPI, HTTPException,Depends
 from fastapi.middleware.cors import CORSMiddleware  # Importa el middleware de CORS
 from pydantic import BaseModel
-from models.user import UserCreate
-from cruds import users, role
+from models.usuario import UsuarioCreate
+from models.rol import RolCreate
+from cruds import usuario, rol
 from database import  create_database, create_tables_and_insert_data,create_connection
 app = FastAPI()
 
-@app.get("/users/count")
+@app.get("/usuarios/count")
 def get_user_count():
     conn = create_connection()
     cursor = conn.cursor()
     try:
-        cursor.execute("SELECT COUNT(*) FROM users")
+        cursor.execute("SELECT COUNT(*) FROM usuario")
         result = cursor.fetchone()
         return result[0]
     except Exception as e:
@@ -22,12 +23,12 @@ def get_user_count():
         cursor.close()
         conn.close()
 
-@app.get("/vigilantes/count")
+@app.get("/transportista/count")
 def get_vigilante_count():
     conn = create_connection()
     cursor = conn.cursor()
     try:
-        cursor.execute("SELECT COUNT(*) FROM users WHERE role_id = (SELECT id FROM roles WHERE name = 'vigilante')")
+        cursor.execute("SELECT COUNT(*) FROM usuario WHERE role_id = (SELECT idrol FROM rol WHERE nombre_rol = 'transportista')")
         result = cursor.fetchone()
         return result[0]
     except Exception as e:
@@ -62,87 +63,90 @@ def read_root():
 
 # Iniciar sesión de usuario
 class LoginData(BaseModel):
-    email: str
+    username: str
     password: str
 @app.post("/login/")
 def login(login_data: LoginData):
-    return users.login_users(login_data.email, login_data.password)
+    return usuario.login_users(login_data.username, login_data.password)
 
-
-
-# Crear un nuevo usuario
-@app.post("/api/users/")
-def create_user(user: UserCreate):
-    return users.create_user(user)
 
 # Usuarios
-# Listar todos los users
-@app.get("/api/users/")
-def read_users():
-    return users.read_users()
+# Crear un nuevo usuario
+@app.post("/api/usuario/")
+def crear_usuario(user: UsuarioCreate):
+    return usuario.create_usuario(user)
 
-#listar usuario por rol
-@app.get("/api/users/role/{user_id}")
-def read_usersByRole(user_id: int):
-    return users.read_usersByIdRole(user_id)
+# Listar todos los users
+@app.get("/api/usuario/")
+def listar_usuarios():
+    return usuario.read_usuarios()
+
+#listar usuarios por rol
+@app.get("/api/usuario/rol/{idrol}")
+def leer_usuarioByRol(idrol: int):
+    return usuario.read_usuarioByIdRol(idrol)
 
 # Obtener un user por su ID
-@app.get("/api/users/{user_id}")
-def select_user_by_id(user_id: int):
-    return users.select_user_by_id(user_id)
+@app.get("/api/usuario/{idusuario}")
+def selectByusuario(idusuario: int):
+    return usuario.select_usuario_by_id(idusuario)
 
 # Actualizar un user
-@app.put("/api/users/{user_id}")
-def update_user(user_id: int, user: UserCreate):
-    return users.update_user(user_id, user)
+@app.put("/api/usuario/{idusuario}")
+def actualizar_usuario(user_id: int, user: UsuarioCreate):
+    return usuario.update_usuario(user_id, user,False)
 
-@app.put("/api/users/Password/{user_id}")
-def update_user(user_id: int, user: UserCreate):
-    return users.update_user2(user_id, user)
+# Actualizar clave de un usuario
+@app.put("/api/usuario/password/{idusuario}")
+def actualizar_clave(idusuario: int, user: UsuarioCreate):
+    return usuario.update_usuario(idusuario, user,True)
 
 # Eliminar un user
-@app.delete("/api/users/{user_id}")
-def delete_user(user_id: int):
-    return users.delete_user(user_id)
-
-
-
-
-
+@app.delete("/api/usuario/{idusuario}")
+def eliminar_usuario(idusuario: int):
+    return usuario.delete_usuario(idusuario)
 
 # ROLES
 # Listar todos los roles
-@app.get("/roles/")
-def list_roles():
-    return role.list_roles()
+@app.get("/rol/")
+def listar_roles():
+    return rol.list_roles()
 
 # Obtener un rol por su ID
-@app.get("/roles/{role_id}")
-def get_role(role_id: int):
-    return role.get_role(role_id)
+@app.get("/rol/{idrol}")
+def get_rol(idrol: int):
+    return rol.get_rol(idrol)
 
 # Crear un nuevo rol
-@app.post("/roles/")
-def create_role(role: UserCreate):
-    return role.create_role(role)
+@app.post("/rol/")
+def crear_rol(roll: RolCreate):
+    return rol.create_role(roll)
 
 # Actualizar un rol
-@app.put("/roles/{role_id}")
-def update_role(role_id: int, role: UserCreate):
-    return role.update_role(role_id, role)
+@app.put("/rol/{idrol}")
+def actualizar_rol(idrol: int, roll: RolCreate):
+    return rol.update_role(idrol, roll)
 
 # Eliminar un rol
-@app.delete("/roles/{role_id}")
-def delete_role(role_id: int):
-    return role.delete_role(role_id)
+@app.delete("/rol/{idrol}")
+def eliminar_rol(idrol: int):
+    return rol.delete_rol(idrol)
 
 
+#Añadir mas campos
+
+
+
+
+
+
+
+#Para el modulo de vehiculo
 class ImagenCapturada(BaseModel):
     frame: str  # Se espera un string que representa el frame
-
 @app.post("/extract_plate/")
 async def extraer_data(frame_data: ImagenCapturada):
-    return {"success": True, "plate": users.Extraer_Data(frame_data.frame)}
+    return {"success": True, "plate": usuario.Extraer_Data(frame_data.frame)}
 
 
 if __name__ == "__main__":

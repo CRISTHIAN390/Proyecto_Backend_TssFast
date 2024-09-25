@@ -2,9 +2,9 @@ import os
 from fastapi import HTTPException
 from database import create_connection
 import bcrypt
-from models.user import UserCreate
+from models.usuario import UsuarioCreate
 import mysql.connector
-def create_cliente(user: UserCreate):
+def create_cliente(user: UsuarioCreate):
     conn = create_connection()
     conn.database = os.getenv("DB_NAME")
     cursor = conn.cursor()

@@ -2,84 +2,90 @@ import os
 from fastapi import HTTPException
 import mysql.connector
 from database import create_connection
-from models.role import RoleCreate
+from models.rol import RolCreate
 
-def create_role(role: RoleCreate):
+# Crear un nuevo rol
+def create_role(rol: RolCreate):
     conn = create_connection()
     conn.database = os.getenv("DB_NAME")
     cursor = conn.cursor()
 
     try:
-        cursor.execute('''INSERT INTO roles (name,state) VALUES (%s,%s)''', (role.name,role.state))
+        cursor.execute('''INSERT INTO rol (nombre_rol, estado_rol) VALUES (%s, %s)''', (rol.nombre_rol, rol.estado_rol))
         conn.commit()
     except mysql.connector.Error as err:
         conn.rollback()
         raise HTTPException(status_code=400, detail=str(err))
     finally:
-        cursor.close()  # Asegúrate de cerrar el cursor también
+        cursor.close()
         conn.close()
 
-    return {"message": "Role created successfully"}
+    return {"message": "Rol creado con éxito"}
 
+# Listar todos los roles
 def list_roles():
     conn = create_connection()
     conn.database = os.getenv("DB_NAME")
     cursor = conn.cursor(dictionary=True)
 
-    cursor.execute("SELECT * FROM roles")
+    cursor.execute("SELECT * FROM rol")
     roles = cursor.fetchall()
     conn.close()
 
     return roles
 
-def get_role(role_id: int):
+# Obtener un rol por su ID
+def get_rol(idrol: int):
     conn = create_connection()
     conn.database = os.getenv("DB_NAME")
     cursor = conn.cursor(dictionary=True)
 
-    cursor.execute("SELECT * FROM roles WHERE id = %s", (role_id,))
-    role = cursor.fetchone()
+    cursor.execute("SELECT * FROM rol WHERE idrol = %s", (idrol,))
+    rol = cursor.fetchone()
     conn.close()
 
-    if role is None:
-        raise HTTPException(status_code=404, detail="Role not found")
+    if rol is None:
+        raise HTTPException(status_code=404, detail="Rol no encontrado")
 
-    return role
+    return rol
 
-def update_role(role_id: int, role: RoleCreate):
+# Actualizar un rol por su ID
+def update_role(idrol: int, rol: RolCreate):
     conn = create_connection()
     conn.database = os.getenv("DB_NAME")
     cursor = conn.cursor()
 
     try:
-        cursor.execute('''UPDATE roles SET name = %s WHERE id = %s''', (role.name, role_id))
+        cursor.execute('''UPDATE rol SET nombre_rol = %s, estado_rol = %s WHERE idrol = %s''', 
+                       (rol.nombre_rol, rol.estado_rol, idrol))
         conn.commit()
     except mysql.connector.Error as err:
         conn.rollback()
         raise HTTPException(status_code=400, detail=str(err))
     finally:
-        cursor.close()  # Cierra el cursor también
+        cursor.close()
         conn.close()
 
-    return {"message": "Role updated successfully"}
+    return {"message": "Rol actualizado con éxito"}
 
-def delete_role(role_id: int):
+# Eliminar (desactivar) un rol por su ID
+def delete_rol(idrol: int):
     conn = create_connection()
     conn.database = os.getenv("DB_NAME")
     cursor = conn.cursor()
 
     try:
         # Actualizar el estado del rol a 0 en lugar de eliminarlo
-        cursor.execute("UPDATE roles SET state = %s WHERE id = %s", (0, role_id))
+        cursor.execute("UPDATE rol SET estado_rol = %s WHERE idrol = %s", (0, idrol))
         conn.commit()
         
         if cursor.rowcount == 0:
-            raise HTTPException(status_code=404, detail="Role not found")
+            raise HTTPException(status_code=404, detail="Rol no encontrado")
     except mysql.connector.Error as err:
         conn.rollback()
         raise HTTPException(status_code=400, detail=str(err))
     finally:
-        cursor.close()  # Cierra el cursor también
+        cursor.close()
         conn.close()
 
-    return {"message": "Role deleted successfully"}
+    return {"message": "Rol eliminado con éxito"}
