@@ -63,11 +63,11 @@ def read_root():
 
 # Iniciar sesión de usuario
 class LoginData(BaseModel):
-    username: str
+    email: str
     password: str
 @app.post("/login/")
 def login(login_data: LoginData):
-    return usuario.login_users(login_data.username, login_data.password)
+    return usuario.login_users(login_data.email, login_data.password)
 
 
 # Usuarios

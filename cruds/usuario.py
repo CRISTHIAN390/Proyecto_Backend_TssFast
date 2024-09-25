@@ -4,7 +4,7 @@ from database import create_connection
 import bcrypt
 from models.usuario import UsuarioCreate
 import mysql.connector
-# Función para crear un usuario
+
 def create_usuario(user: UsuarioCreate):
     conn = create_connection()
     conn.database = os.getenv("DB_NAME")
@@ -115,30 +115,32 @@ def login_users(email: str, password: str):
     conn = create_connection()
     conn.database = os.getenv("DB_NAME")
     cursor = conn.cursor(dictionary=True)
-    
     try:
+        # Asegúrate de que el parámetro sea una tupla
         cursor.execute("SELECT * FROM usuario WHERE email = %s", (email,))
-        user = cursor.fetchone()
+        usuario = cursor.fetchone()
         
-        if user:
-            stored_password = user['password']
+        if usuario:
+            stored_password = usuario['password']
+            
             if bcrypt.checkpw(password.encode('utf-8'), stored_password.encode('utf-8')):
-                idrol = user['idrol']
+                idrol = usuario['idrol']
+                #print(idrol)
                 # Obtener el nombre del rol
-                cursor.execute("SELECT nombre_rol FROM rol WHERE idrol = %s", (idrol))
-                nombre_rol = cursor.fetchone()['nombre_rol']
-                
+                cursor.execute("SELECT nombre_rol FROM rol WHERE idrol = %s", (idrol,))
+                nombre_rol = cursor.fetchone()
+                # Devolver los datos del usuario y el nombre del rol
                 user_data = {
-                    "idusuario": user['idusuario'],
-                    "email": user['email'],
-                    "rol": nombre_rol,
+                    "idusuario": usuario['idusuario'],
+                    "email": usuario['email'],
+                    "idrol": nombre_rol,
                     "message": "Login exitoso"
                 }
                 return user_data
             else:
-                raise HTTPException(status_code=401, detail="Password incorrecto")
+                raise HTTPException(status_code=401, detail="Password incorrecto(Unauthorized)")
         else:
-            raise HTTPException(status_code=404, detail="User not found")
+            raise HTTPException(status_code=404, detail="Usuario no encontrado")
     except mysql.connector.Error as err:
         raise HTTPException(status_code=400, detail=str(err))
     finally:
