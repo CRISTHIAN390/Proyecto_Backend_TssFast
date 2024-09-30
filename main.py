@@ -37,13 +37,17 @@ def get_vigilante_count():
     finally:
         cursor.close()
         conn.close()
-
+origins = [
+    "https://proyect-front-tssang.onrender.com",  # URL de tu frontend en Render
+   # "http://localhost:4200"  # Si quieres permitir acceso desde localhost para desarrollo
+]
 
 
 # Configurar CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Permite todas las orígenes. Cambia esto a un dominio específico en producción.
+    allow_origins=origins,  # Permite todas las orígenes. Cambia esto a un dominio específico en producción.
+   # allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],  # Permite todos los métodos (GET, POST, PUT, DELETE, etc.).
     allow_headers=["*"],  # Permite todos los encabezados.
