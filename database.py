@@ -65,7 +65,7 @@ def create_tables_and_insert_data():
                     )''')
 
     # Insertar roles predeterminados y su estado
-    roles = [('admin', 1), ('contador', 1), ('transportista', 1)]
+    roles = [('admin', 1), ('contador', 1), ('transportista', 1),('invitado', 1)]
     for rol_nombre, rol_estado in roles:
         cursor.execute('''INSERT INTO Rol (nombre_rol, estado_rol) 
                         SELECT %s, %s 

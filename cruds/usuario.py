@@ -2,20 +2,32 @@ import os
 from fastapi import HTTPException
 from database import create_connection
 import bcrypt
-from models.usuario import UsuarioCreate
+from models.usuario import UsuarioCreate,UsuarioCrear
+from models.persona import PersonaCreate
 import mysql.connector
+from cruds import persona
 
-def create_usuario(user: UsuarioCreate):
+def create_usuario(user: UsuarioCrear):
     conn = create_connection()
     conn.database = os.getenv("DB_NAME")
     cursor = conn.cursor()
+    
+    # Creación de la persona
+    person_data  = PersonaCreate(apellidos=user.apellidos, nombres=user.nombres, dni=user.dni, celular="000000000", estado=1)
+    persona.create_persona(person_data)
+    
+    # Seleccionar idpersona por dni y convertir a entero
+    idperson = int(persona.select_persona_dni(str(user.dni)))
+    
+    # Aquí eliminamos la coma para evitar la creación de una tupla
+    hashed_password = bcrypt.hashpw(user.password.encode('utf-8'), bcrypt.gensalt()).decode()
 
-    hashed_password = bcrypt.hashpw(user.password.encode('utf-8'), bcrypt.gensalt()).decode(),
+    #password_hash = bcrypt.hashpw(password_plain.encode(), bcrypt.gensalt()).decode()
 
     try:
         cursor.execute('''INSERT INTO usuario (email, password, idrol, idpersona, fechacreacion, estado) 
                           VALUES (%s, %s, %s, %s, NOW(), %s)''',
-                       (user.email, hashed_password, user.idrol, user.idpersona, user.estado))
+                       (user.email, hashed_password, user.idrol, idperson, user.estado))
         conn.commit()
     except mysql.connector.Error as err:
         conn.rollback()
@@ -23,7 +35,6 @@ def create_usuario(user: UsuarioCreate):
     finally:
         cursor.close()
         conn.close()
-
     return {"message": "Usuario creado con éxito"}
 
 # Función para leer todos los usuarios

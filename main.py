@@ -2,7 +2,7 @@ import os
 from fastapi import FastAPI, HTTPException,Depends
 from fastapi.middleware.cors import CORSMiddleware  # Importa el middleware de CORS
 from pydantic import BaseModel
-from models.usuario import UsuarioCreate
+from models.usuario import UsuarioCreate,UsuarioCrear
 from models.rol import RolCreate
 from cruds import usuario, rol
 from database import  create_database, create_tables_and_insert_data,create_connection
@@ -72,8 +72,18 @@ def login(login_data: LoginData):
 # Usuarios
 # Crear un nuevo usuario
 @app.post("/api/usuario/")
-def crear_usuario(user: UsuarioCreate):
-    return usuario.create_usuario(user)
+def crear_usuario(perso: UsuarioCrear):
+    return usuario.create_usuario(perso)
+
+
+
+
+
+
+
+
+
+
 
 # Listar todos los users
 @app.get("/api/usuario/")
