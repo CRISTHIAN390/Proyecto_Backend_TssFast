@@ -21,9 +21,6 @@ def create_usuario(user: UsuarioCrear):
     
     # Aquí eliminamos la coma para evitar la creación de una tupla
     hashed_password = bcrypt.hashpw(user.password.encode('utf-8'), bcrypt.gensalt()).decode()
-
-    #password_hash = bcrypt.hashpw(password_plain.encode(), bcrypt.gensalt()).decode()
-
     try:
         cursor.execute('''INSERT INTO usuario (email, password, idrol, idpersona, fechacreacion, estado) 
                           VALUES (%s, %s, %s, %s, NOW(), %s)''',
@@ -42,13 +39,29 @@ def read_usuarios():
     conn = create_connection()
     conn.database = os.getenv("DB_NAME")
     cursor = conn.cursor(dictionary=True)
-
-    cursor.execute("SELECT * FROM usuario")
+#SELECT * FROM usuario
+    cursor.execute("""
+                    SELECT 
+                        u.idusuario,
+                        p.apellidos,
+                        p.nombres,
+                        u.email,
+                        r.nombre_rol,
+                        p.dni,
+                        u.estado
+                    FROM 
+                        Usuario u
+                    JOIN 
+                        Persona p ON u.idpersona = p.idpersona
+                    JOIN 
+                        Rol r ON u.idrol = r.idrol
+                    WHERE 
+                        u.idusuario <> 1;
+                    """)
     usuarios = cursor.fetchall()
     conn.close()
 
     return usuarios
-
 # Función para leer usuarios por ID de rol
 def read_usuarioByIdRol(idrol: int):
     conn = create_connection()

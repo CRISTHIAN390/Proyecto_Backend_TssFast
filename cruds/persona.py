@@ -33,7 +33,6 @@ def read_personas():
     conn.close()
     return personas
 
-
 def select_persona_dni(dni: str):
     conn = create_connection()
     conn.database = os.getenv("DB_NAME")

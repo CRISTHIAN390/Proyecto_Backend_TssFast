@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware  # Importa el middleware de C
 from pydantic import BaseModel
 from models.usuario import UsuarioCreate,UsuarioCrear
 from models.rol import RolCreate
-from cruds import usuario, rol
+from cruds import usuario, rol,persona
 from database import  create_database, create_tables_and_insert_data,create_connection
 app = FastAPI()
 
@@ -75,20 +75,12 @@ def login(login_data: LoginData):
 def crear_usuario(perso: UsuarioCrear):
     return usuario.create_usuario(perso)
 
-
-
-
-
-
-
-
-
-
-
 # Listar todos los users
 @app.get("/api/usuario/")
 def listar_usuarios():
     return usuario.read_usuarios()
+
+
 
 #listar usuarios por rol
 @app.get("/api/usuario/rol/{idrol}")
