@@ -5,7 +5,7 @@ from pydantic import BaseModel
 from models.usuario import UsuarioCreate,UsuarioCrear,UsuarioAcceso
 from models.cliente import ClienteCreate
 from models.rol import RolCreate
-from cruds import usuario, rol,persona,cliente,proveedor
+from cruds import usuario, rol,cliente,proveedor,persona
 from database import  create_database, create_tables_and_insert_data,create_connection
 app = FastAPI()
 
@@ -74,6 +74,7 @@ def login(login_data: LoginData):
 # Crear un nuevo usuario
 @app.post("/api/usuario/")
 def crear_usuario(perso: UsuarioCrear):
+    print("crear usuario")
     return usuario.create_usuario(perso)
 
 # Listar todos los users
@@ -144,6 +145,11 @@ def eliminar_rol(idrol: int):
 @app.get("/api/cliente/")
 def listar_clientes():
     return cliente.read_clientes()
+
+@app.post("/api/cliente/")
+def crear_cliente(clien: ClienteCreate):
+    return cliente.create_cliente(clien)
+
 
 # Listar todos los proveedor
 @app.get("/api/proveedor/")

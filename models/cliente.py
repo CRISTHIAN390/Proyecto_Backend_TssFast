@@ -6,5 +6,5 @@ class ClienteCreate(BaseModel):
     dni: str
     celular: str
     preferencias:str
-    estado:int
+    estado:bool
     

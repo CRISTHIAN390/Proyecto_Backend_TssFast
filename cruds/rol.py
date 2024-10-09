@@ -28,9 +28,10 @@ def list_roles():
     conn.database = os.getenv("DB_NAME")
     cursor = conn.cursor(dictionary=True)
 
-    cursor.execute("""select
-                   * from  rol WHERE idrol<>1;
-                   """)
+    cursor.execute('''
+                   SELECT
+                        * FROM  rol WHERE idrol!=1;
+                   ''')
     roles = cursor.fetchall()
     conn.close()
     return roles
