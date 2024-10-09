@@ -11,7 +11,7 @@ class UsuarioCreate(BaseModel):
 class UsuarioAcceso(BaseModel):
     idusuario:int
     idrol: int
-    estado:int
+    estado:bool
 
 class UsuarioCrear(BaseModel):
     apellidos:str

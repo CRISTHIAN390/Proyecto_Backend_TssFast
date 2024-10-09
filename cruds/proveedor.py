@@ -1,7 +1,6 @@
 import os
 from fastapi import HTTPException
 from database import create_connection
-import bcrypt
 from models.persona import PersonaCreate
 from models.proveedor import ProveedorCreate
 import mysql.connector

@@ -46,6 +46,7 @@ def read_usuarios():
                         p.apellidos,
                         p.nombres,
                         u.email,
+                        r.idrol,
                         r.nombre_rol,
                         p.dni,
                         u.estado
@@ -115,14 +116,14 @@ def update_usuario(idusuario: int, usuario: UsuarioCreate, update_password: bool
         conn.close()
     return {"message": "Usuario actualizado con éxito"}
 
-def update_acceso(idusuario: int, usuario: UsuarioAcceso):
+def update_acceso(idusuario: int, userr: UsuarioAcceso):
     conn = create_connection()
     conn.database = os.getenv("DB_NAME")
     cursor = conn.cursor()
     try:
         cursor.execute('''UPDATE usuario SET idrol = %s, estado = %s
                           WHERE idusuario = %s''',
-                       (usuario.idrol, usuario.estado, idusuario))
+                       (userr.idrol, userr.estado, idusuario))
         conn.commit()
     except mysql.connector.Error as err:
         conn.rollback()
