@@ -2,7 +2,7 @@ import os
 from fastapi import HTTPException
 from database import create_connection
 import bcrypt
-from models.usuario import UsuarioCreate,UsuarioCrear
+from models.usuario import UsuarioCreate,UsuarioCrear,UsuarioAcceso
 from models.persona import PersonaCreate
 import mysql.connector
 from cruds import persona
@@ -115,7 +115,23 @@ def update_usuario(idusuario: int, usuario: UsuarioCreate, update_password: bool
         conn.close()
     return {"message": "Usuario actualizado con éxito"}
 
-
+def update_acceso(idusuario: int, usuario: UsuarioAcceso):
+    conn = create_connection()
+    conn.database = os.getenv("DB_NAME")
+    cursor = conn.cursor()
+    try:
+        cursor.execute('''UPDATE usuario SET idrol = %s, estado = %s
+                          WHERE idusuario = %s''',
+                       (usuario.idrol, usuario.estado, idusuario))
+        conn.commit()
+    except mysql.connector.Error as err:
+        conn.rollback()
+        raise HTTPException(status_code=400, detail=str(err))
+    finally:
+        cursor.close()
+        conn.close()
+    return {"message": "Usuario actualizado con éxito"}    
+    
 # Función para eliminar (desactivar) un usuario
 def delete_usuario(idusuario: int):
     conn = create_connection()

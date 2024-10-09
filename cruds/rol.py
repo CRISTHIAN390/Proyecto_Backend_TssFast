@@ -28,10 +28,9 @@ def list_roles():
     conn.database = os.getenv("DB_NAME")
     cursor = conn.cursor(dictionary=True)
 
-    cursor.execute("SELECT * FROM rol")
+    cursor.execute("select * from  rol;")
     roles = cursor.fetchall()
     conn.close()
-
     return roles
 
 # Obtener un rol por su ID

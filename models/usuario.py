@@ -8,6 +8,11 @@ class UsuarioCreate(BaseModel):
     fechacreacion: str
     estado:int
 
+class UsuarioAcceso(BaseModel):
+    idusuario:int
+    idrol: int
+    estado:int
+
 class UsuarioCrear(BaseModel):
     apellidos:str
     nombres: str

@@ -2,9 +2,10 @@ import os
 from fastapi import FastAPI, HTTPException,Depends
 from fastapi.middleware.cors import CORSMiddleware  # Importa el middleware de CORS
 from pydantic import BaseModel
-from models.usuario import UsuarioCreate,UsuarioCrear
+from models.usuario import UsuarioCreate,UsuarioCrear,UsuarioAcceso
+from models.cliente import ClienteCreate
 from models.rol import RolCreate
-from cruds import usuario, rol,persona
+from cruds import usuario, rol,persona,cliente,proveedor
 from database import  create_database, create_tables_and_insert_data,create_connection
 app = FastAPI()
 
@@ -80,8 +81,6 @@ def crear_usuario(perso: UsuarioCrear):
 def listar_usuarios():
     return usuario.read_usuarios()
 
-
-
 #listar usuarios por rol
 @app.get("/api/usuario/rol/{idrol}")
 def leer_usuarioByRol(idrol: int):
@@ -94,13 +93,19 @@ def selectByusuario(idusuario: int):
 
 # Actualizar un user
 @app.put("/api/usuario/{idusuario}")
-def actualizar_usuario(user_id: int, user: UsuarioCreate):
-    return usuario.update_usuario(user_id, user,False)
+def actualizar_usuario(idusuario: int, user: UsuarioCreate):
+    return usuario.update_usuario(idusuario, user,False)
 
 # Actualizar clave de un usuario
 @app.put("/api/usuario/password/{idusuario}")
 def actualizar_clave(idusuario: int, user: UsuarioCreate):
     return usuario.update_usuario(idusuario, user,True)
+
+
+# Actualizar un acceso rol-estado
+@app.put("/api/usuario/acceso/{idusuario}")
+def actualizar_acceso(idusuario: int, useracc: UsuarioAcceso):
+    return usuario.update_acceso(idusuario, useracc)
 
 # Eliminar un user
 @app.delete("/api/usuario/{idusuario}")
@@ -109,36 +114,41 @@ def eliminar_usuario(idusuario: int):
 
 # ROLES
 # Listar todos los roles
-@app.get("/rol/")
+@app.get("/api/rol/")
 def listar_roles():
     return rol.list_roles()
 
 # Obtener un rol por su ID
-@app.get("/rol/{idrol}")
+@app.get("/api/rol/{idrol}")
 def get_rol(idrol: int):
     return rol.get_rol(idrol)
 
 # Crear un nuevo rol
-@app.post("/rol/")
+@app.post("/api/rol/")
 def crear_rol(roll: RolCreate):
     return rol.create_role(roll)
 
 # Actualizar un rol
-@app.put("/rol/{idrol}")
+@app.put("/api/rol/{idrol}")
 def actualizar_rol(idrol: int, roll: RolCreate):
     return rol.update_role(idrol, roll)
 
 # Eliminar un rol
-@app.delete("/rol/{idrol}")
+@app.delete("/api/rol/{idrol}")
 def eliminar_rol(idrol: int):
     return rol.delete_rol(idrol)
 
 
 #Añadir mas campos
+# Listar todos los clientes
+@app.get("/api/cliente/")
+def listar_clientes():
+    return cliente.read_clientes()
 
-
-
-
+# Listar todos los proveedor
+@app.get("/api/proveedor/")
+def listar_proveedores():
+    return proveedor.read_proveedores()
 
 
 

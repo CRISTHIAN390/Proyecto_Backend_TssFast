@@ -52,7 +52,7 @@ def create_tables_and_insert_data():
                         estado INT
                     )''')
     # Crear tabla de Usuario
-    cursor.execute('''CREATE TABLE IF NOT EXISTS Usuario (
+    cursor.execute('''CREATE TABLE IF NOT EXISTS Usuario(
                         idusuario INT AUTO_INCREMENT PRIMARY KEY,
                         email VARCHAR(250),
                         password VARCHAR(255),
@@ -62,6 +62,23 @@ def create_tables_and_insert_data():
                         estado INT,
                         FOREIGN KEY (idpersona) REFERENCES Persona(idpersona),
                         FOREIGN KEY (idrol) REFERENCES Rol(idrol)
+                    )''')
+    
+     # Crear tabla de Proveedor
+    cursor.execute('''CREATE TABLE IF NOT EXISTS Proveedor (
+                        idproveedor INT AUTO_INCREMENT PRIMARY KEY,
+                        idpersona INT,
+                        nombre_proveedor VARCHAR(250),
+                        ruc VARCHAR(255),
+                        FOREIGN KEY (idpersona) REFERENCES Persona(idpersona)
+                    )''')
+
+    # Crear tabla de Cliente
+    cursor.execute('''CREATE TABLE IF NOT EXISTS Cliente (
+                        idcliente INT AUTO_INCREMENT PRIMARY KEY,
+                        idpersona INT,
+                        preferencias VARCHAR(250),
+                        FOREIGN KEY (idpersona) REFERENCES Persona(idpersona)
                     )''')
 
     # Insertar roles predeterminados y su estado
