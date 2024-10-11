@@ -5,6 +5,6 @@ class ClienteCreate(BaseModel):
     nombres: str
     dni: str
     celular: str
-    preferencias:str
-    estado:bool
+    preferencias: str
+    estado: bool
     

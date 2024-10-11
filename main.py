@@ -74,7 +74,6 @@ def login(login_data: LoginData):
 # Crear un nuevo usuario
 @app.post("/api/usuario/")
 def crear_usuario(perso: UsuarioCrear):
-    print("crear usuario")
     return usuario.create_usuario(perso)
 
 # Listar todos los users
@@ -148,6 +147,7 @@ def listar_clientes():
 
 @app.post("/api/cliente/")
 def crear_cliente(clien: ClienteCreate):
+    print("Datos recibidos")
     return cliente.create_cliente(clien)
 
 

@@ -7,20 +7,20 @@ import mysql.connector
 from cruds import persona
 
 
-def create_cliente(cliente: ClienteCreate):
+def create_cliente(client: ClienteCreate):
     conn = create_connection()
     conn.database = os.getenv("DB_NAME")
     cursor = conn.cursor()
      # Creación de la persona
     
-    person_data  = PersonaCreate(apellidos=cliente.apellidos, nombres=cliente.nombres, dni=cliente.dni, celular=cliente.celular, estado=cliente.estado)
+    person_data  = PersonaCreate(apellidos=client.apellidos, nombres=client.nombres, dni=client.dni, celular=client.celular, estado=client.estado)
     persona.create_persona(person_data)   
     # Seleccionar idpersona por dni y convertir a entero
-    idperson = int(persona.select_persona_dni(str(cliente.dni)))
+    idperson = idperson = int(persona.select_persona_dni(client.dni))
     try:
-        cursor.execute('''INSERT INTO proveedor (idpersona, preferencias) 
+        cursor.execute('''INSERT INTO cliente (idpersona, preferencias) 
                           VALUES (%s, %s)''',
-                       (idperson, cliente.preferencias))
+                       (idperson, client.preferencias))
         conn.commit()
     except mysql.connector.Error as err:
         conn.rollback()
