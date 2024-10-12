@@ -168,7 +168,16 @@ def crear_cliente(clien: ClienteCreate):
 
 @app.put("/api/cliente/{idcliente}")
 def updateCliente(idcliente: int, clien: ClienteCreate):
+    
     return cliente.update_cliente(idcliente, clien)
+
+# Eliminar un cliente
+@app.delete("/api/cliente/{idcliente}")
+def eliminar_cliente(idcliente: int):
+    return cliente.delete_cliente(idcliente)
+
+
+
 
 
 # Listar todos los proveedor

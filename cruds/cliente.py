@@ -49,7 +49,9 @@ def read_clientes():
                     FROM 
                         cliente c
                     JOIN
-                        persona p on c.idpersona=p.idpersona;
+                        persona p ON c.idpersona = p.idpersona
+                    WHERE 
+                        p.idpersona <> 1 AND p.estado = true;
                    """)
     clientes = cursor.fetchall()
     conn.close()
@@ -90,8 +92,6 @@ def update_cliente(idcliente: int, clien: ClienteCreate):
 
     return {"message": "Cliente actualizado con éxito"}
 
-
-
 def select_personaidcliente(idcliente: int):
     conn = create_connection()
     conn.database = os.getenv("DB_NAME")
@@ -104,3 +104,21 @@ def select_personaidcliente(idcliente: int):
     if client is None:
         raise HTTPException(status_code=404, detail="persona no encontrada")
     return client["idpersona"]
+
+def delete_cliente(idcliente: int):
+    #corrigue el que envio es idcliente
+    conn = create_connection()
+    conn.database = os.getenv("DB_NAME")
+    cursor = conn.cursor()
+    try:
+        # Actualiza el estado del cliente de 1 a 0 (desactivado)
+        cursor.execute("UPDATE persona SET estado = 0 WHERE idpersona = %s", (idcliente,))
+        conn.commit()
+    except mysql.connector.Error as err:
+        conn.rollback()
+        raise HTTPException(status_code=400, detail=str(err))
+    finally:
+        cursor.close()
+        conn.close()
+
+    return {"message": "El usuario se eliminó con éxito"}
