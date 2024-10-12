@@ -1,7 +1,7 @@
 import os
 from fastapi import HTTPException
 from database import create_connection
-from models.persona import PersonaCreate
+from models.persona import PersonaCreat
 from models.proveedor import ProveedorCreate
 import mysql.connector
 from cruds import persona
@@ -12,7 +12,7 @@ def create_proveedor(prove: ProveedorCreate):
     cursor = conn.cursor()
     
      # Creación de la persona
-    person_data  = PersonaCreate(apellidos=prove.apellidos, nombres=prove.nombres, dni=prove.dni, celular="000000000", estado=1)
+    person_data  = PersonaCreat(apellidos=prove.apellidos, nombres=prove.nombres, dni=prove.dni, celular="000000000", estado=1)
     persona.create_persona(person_data)   
     
     # Seleccionar idpersona por dni y convertir a entero

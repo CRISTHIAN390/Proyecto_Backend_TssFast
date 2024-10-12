@@ -9,6 +9,7 @@ from cruds import usuario, rol,cliente,proveedor,persona
 from database import  create_database, create_tables_and_insert_data,create_connection
 app = FastAPI()
 
+
 @app.get("/usuarios/count")
 def get_user_count():
     conn = create_connection()
@@ -23,6 +24,7 @@ def get_user_count():
     finally:
         cursor.close()
         conn.close()
+
 
 @app.get("/transportista/count")
 def get_vigilante_count():
@@ -49,11 +51,13 @@ app.add_middleware(
     allow_headers=["*"],  # Permite todos los encabezados.
 )
 
+
 # Inicializar la base de datos al arrancar la aplicación utilizando el nuevo esquema Lifespan
 @app.on_event("startup")
 async def startup_event():
     create_database()
     create_tables_and_insert_data()
+
 
 # Ruta raíz para verificar que la API está funcionando
 @app.get("/")
@@ -76,25 +80,30 @@ def login(login_data: LoginData):
 def crear_usuario(perso: UsuarioCrear):
     return usuario.create_usuario(perso)
 
+
 # Listar todos los users
 @app.get("/api/usuario/")
 def listar_usuarios():
     return usuario.read_usuarios()
+
 
 #listar usuarios por rol
 @app.get("/api/usuario/rol/{idrol}")
 def leer_usuarioByRol(idrol: int):
     return usuario.read_usuarioByIdRol(idrol)
 
+
 # Obtener un user por su ID
 @app.get("/api/usuario/{idusuario}")
 def selectByusuario(idusuario: int):
     return usuario.select_usuario_by_id(idusuario)
 
+
 # Actualizar un user
 @app.put("/api/usuario/{idusuario}")
 def actualizar_usuario(idusuario: int, user: UsuarioCreate):
     return usuario.update_usuario(idusuario, user,False)
+
 
 # Actualizar clave de un usuario
 @app.put("/api/usuario/password/{idusuario}")
@@ -107,10 +116,12 @@ def actualizar_clave(idusuario: int, user: UsuarioCreate):
 def actualizar_acceso(idusuario: int, useracc: UsuarioAcceso):
     return usuario.update_acceso(idusuario, useracc)
 
+
 # Eliminar un user
 @app.delete("/api/usuario/{idusuario}")
 def eliminar_usuario(idusuario: int):
     return usuario.delete_usuario(idusuario)
+
 
 # ROLES
 # Listar todos los roles
@@ -118,20 +129,24 @@ def eliminar_usuario(idusuario: int):
 def listar_roles():
     return rol.list_roles()
 
+
 # Obtener un rol por su ID
 @app.get("/api/rol/{idrol}")
 def get_rol(idrol: int):
     return rol.get_rol(idrol)
+
 
 # Crear un nuevo rol
 @app.post("/api/rol/")
 def crear_rol(roll: RolCreate):
     return rol.create_role(roll)
 
+
 # Actualizar un rol
 @app.put("/api/rol/{idrol}")
 def actualizar_rol(idrol: int, roll: RolCreate):
     return rol.update_role(idrol, roll)
+
 
 # Eliminar un rol
 @app.delete("/api/rol/{idrol}")
@@ -145,17 +160,21 @@ def eliminar_rol(idrol: int):
 def listar_clientes():
     return cliente.read_clientes()
 
+
 @app.post("/api/cliente/")
 def crear_cliente(clien: ClienteCreate):
     print("Datos recibidos")
     return cliente.create_cliente(clien)
+
+@app.put("/api/cliente/{idcliente}")
+def updateCliente(idcliente: int, clien: ClienteCreate):
+    return cliente.update_cliente(idcliente, clien)
 
 
 # Listar todos los proveedor
 @app.get("/api/proveedor/")
 def listar_proveedores():
     return proveedor.read_proveedores()
-
 
 
 #Para el modulo de vehiculo

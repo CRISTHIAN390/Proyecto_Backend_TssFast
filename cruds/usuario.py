@@ -3,7 +3,7 @@ from fastapi import HTTPException
 from database import create_connection
 import bcrypt
 from models.usuario import UsuarioCreate,UsuarioCrear,UsuarioAcceso
-from models.persona import PersonaCreate
+from models.persona import PersonaCreat
 import mysql.connector
 from cruds import persona
 
@@ -13,7 +13,7 @@ def create_usuario(user: UsuarioCrear):
     cursor = conn.cursor()
     
     # Creación de la persona
-    person_data  = PersonaCreate(apellidos=user.apellidos, nombres=user.nombres, dni=user.dni, celular="000000000", estado=1)
+    person_data  = PersonaCreat(apellidos=user.apellidos, nombres=user.nombres, dni=user.dni, celular="000000000", estado=1)
     persona.create_persona(person_data)
     
     # Seleccionar idpersona por dni y convertir a entero

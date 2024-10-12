@@ -1,9 +1,9 @@
 from pydantic import BaseModel
 
-class PersonaCreate(BaseModel):
+class PersonaCreat(BaseModel):
     apellidos: str
     nombres: str
     dni: str
     celular: str
-    estado:int
+    estado:bool
     

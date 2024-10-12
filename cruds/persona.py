@@ -1,11 +1,10 @@
 import os
 from fastapi import HTTPException
 from database import create_connection
-import bcrypt
-from models.persona import PersonaCreate
+from models.persona import PersonaCreat
 import mysql.connector
 
-def create_persona(person: PersonaCreate):
+def create_persona(person: PersonaCreat):
     conn = create_connection()
     conn.database = os.getenv("DB_NAME")
     cursor = conn.cursor()
@@ -18,8 +17,8 @@ def create_persona(person: PersonaCreate):
         conn.rollback()
         raise HTTPException(status_code=400, detail=str(err))
     finally:
+        cursor.close()
         conn.close()
-
     return {"message": "Persona creado con exito"}
 
 
@@ -44,8 +43,8 @@ def select_persona_dni(dni: str):
 
     if person is None:
         raise HTTPException(status_code=404, detail="persona no encontrada")
-    
     return person["idpersona"]
+
 def select_persona_by_id(idpersona: int):
     conn = create_connection()
     conn.database = os.getenv("DB_NAME")
@@ -59,23 +58,22 @@ def select_persona_by_id(idpersona: int):
         raise HTTPException(status_code=404, detail="persona no encontrada")
     return person
 
-def update_persona(idpersona: int, person: PersonaCreate):
-    conn = create_connection()
-    conn.database = os.getenv("DB_NAME")
+def update_persona(idpersona: int, person: PersonaCreat):
+    conn = create_connection()  # Asegúrate de que esta función se define correctamente
+    conn.database = os.getenv("DB_NAME")  # Verifica que la variable de entorno esté bien configurada
     cursor = conn.cursor()
     
     try:
-        cursor.execute('''UPDATE persona SET apellidos = %s, nombres = %s, dni = %s, calular = %s, estado = %s
+        cursor.execute('''UPDATE persona SET apellidos = %s, nombres = %s, dni = %s, celular = %s, estado = %s
                           WHERE idpersona = %s''',
-                       (person.apellidos, person.nombres, person.dni, person.celular, person.estado,idpersona))
+                       (person.apellidos, person.nombres, person.dni, person.celular, person.estado, idpersona))
         conn.commit()
     except mysql.connector.Error as err:
         conn.rollback()
-        raise HTTPException(status_code=400, detail=str(err))
+        raise HTTPException(status_code=400, detail=str(err))  # Lanza excepción HTTP en caso de error
     finally:
-        conn.close()
-
-    return {"message": "Persona actualizada con exito"}
+        cursor.close()  # Cierra el cursor
+    return {"message": "Persona actualizada con éxito"}
 
 def delete_persona(idpersona: int):
     conn = create_connection()
