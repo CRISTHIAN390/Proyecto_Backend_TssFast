@@ -4,6 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware  # Importa el middleware de C
 from pydantic import BaseModel
 from models.usuario import UsuarioCreate,UsuarioCrear,UsuarioAcceso
 from models.cliente import ClienteCreate
+from models.proveedor import ProveedorCreate
 from models.rol import RolCreate
 from cruds import usuario, rol,cliente,proveedor,persona
 from database import  create_database, create_tables_and_insert_data,create_connection
@@ -176,14 +177,15 @@ def updateCliente(idcliente: int, clien: ClienteCreate):
 def eliminar_cliente(idcliente: int):
     return cliente.delete_cliente(idcliente)
 
-
-
-
-
 # Listar todos los proveedor
 @app.get("/api/proveedor/")
 def listar_proveedores():
     return proveedor.read_proveedores()
+
+# Listar todos los proveedor
+@app.post("/api/proveedor/")
+def crear_proveedor(prove: ProveedorCreate):
+    return proveedor.create_proveedor(prove)
 
 
 #Para el modulo de vehiculo

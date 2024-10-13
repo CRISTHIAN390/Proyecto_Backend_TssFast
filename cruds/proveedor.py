@@ -12,14 +12,14 @@ def create_proveedor(prove: ProveedorCreate):
     cursor = conn.cursor()
     
      # Creación de la persona
-    person_data  = PersonaCreat(apellidos=prove.apellidos, nombres=prove.nombres, dni=prove.dni, celular="000000000", estado=1)
-    persona.create_persona(person_data)   
+    person_data  = PersonaCreat(apellidos=prove.apellidos, nombres=prove.nombres, dni=prove.dni, celular=prove.celular, estado=prove.estado)
+    persona.create_persona(person_data)     
     
     # Seleccionar idpersona por dni y convertir a entero
-    idperson = int(persona.select_persona_dni(str(prove.dni)))
+    idperson = idperson = int(persona.select_persona_dni(prove.dni))
        
     try:
-        cursor.execute('''INSERT INTO proveedor (idpersona, nombre_proveedor, ruc) 
+        cursor.execute('''INSERT INTO proveedor(idpersona, nombre_proveedor, ruc) 
                           VALUES (%s, %s, %s)''',
                        (idperson, prove.nombre_proveedor, prove.ruc))
         conn.commit()
@@ -30,7 +30,6 @@ def create_proveedor(prove: ProveedorCreate):
         conn.close()
 
     return {"message": "Proveedor creado con exito"}
-
 
 def read_proveedores():
     conn = create_connection()
@@ -53,6 +52,6 @@ def read_proveedores():
                         persona p on c.idpersona=p.idpersona;
                    """)
     provedores = cursor.fetchall()
- 
+
     conn.close()
     return provedores
