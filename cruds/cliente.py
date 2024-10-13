@@ -110,9 +110,13 @@ def delete_cliente(idcliente: int):
     conn = create_connection()
     conn.database = os.getenv("DB_NAME")
     cursor = conn.cursor()
+    idpersona= int(select_personaidcliente(idcliente=idcliente)) 
     try:
         # Actualiza el estado del cliente de 1 a 0 (desactivado)
-        cursor.execute("UPDATE persona SET estado = 0 WHERE idpersona = %s", (idcliente,))
+        cursor.execute('''UPDATE persona SET estado = 0
+                          WHERE idpersona = %s
+                        
+                        ''', (idpersona,))
         conn.commit()
     except mysql.connector.Error as err:
         conn.rollback()
@@ -121,4 +125,4 @@ def delete_cliente(idcliente: int):
         cursor.close()
         conn.close()
 
-    return {"message": "El usuario se eliminó con éxito"}
+    return {"message": "El cliente se eliminó con éxito"}
