@@ -55,3 +55,11 @@ def read_proveedores():
 
     conn.close()
     return provedores
+
+def update_proveedores(idprove:int,prove: ProveedorCreate):
+    conn = create_connection()
+    conn.database = os.getenv("DB_NAME")
+    cursor = conn.cursor(dictionary=True)
+
+    
+    return 1
