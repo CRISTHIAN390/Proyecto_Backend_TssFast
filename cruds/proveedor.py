@@ -4,7 +4,7 @@ from database import create_connection
 from models.persona import PersonaCreat
 from models.proveedor import ProveedorCreate
 import mysql.connector
-from cruds import persona
+from cruds import persona,cliente
 
 def create_proveedor(prove: ProveedorCreate):
     conn = create_connection()
@@ -56,10 +56,71 @@ def read_proveedores():
     conn.close()
     return provedores
 
-def update_proveedores(idprove:int,prove: ProveedorCreate):
+def update_proveedores(idprove: int,prove: ProveedorCreate):
+    conn = create_connection()
+    conn.database = os.getenv("DB_NAME")
+    cursor = conn.cursor()
+    
+    person_dt = PersonaCreat(
+    apellidos=prove.apellidos, 
+    nombres=prove.nombres,    
+    dni=prove.dni,              
+    celular=prove.celular,     
+    estado=1                   
+    )
+    idper =int(select_personaidproveedor(idprove=idprove))  # Obtener el idpersona del cliente en la base de datos
+    
+    print(idper) 
+    # Actualiza de la persona
+    print(prove)
+    # Actualiza la información de la persona
+    persona.update_persona(idpersona=idper, person=person_dt)
+    print("hola") 
+    
+    try:
+        # Actualizar preferencias del cliente en la base de datos
+        cursor.execute('''UPDATE proveedor SET nombre_proveedor = %s, ruc = %s
+                          WHERE idproveedor = %s''',
+                       (prove.nombre_proveedor, prove.ruc, idprove))
+        conn.commit()  # Confirmar los cambios en la base de datos
+    except mysql.connector.Error as err:
+        conn.rollback()  # Revertir cambios en caso de error
+        raise HTTPException(status_code=400, detail=str(err))  # Lanzar una excepción HTTP
+    finally:
+        conn.close()  # Asegurarse de cerrar la conexión
+
+    return {"message": "Cliente actualizado con éxito"}
+
+def select_personaidproveedor(idprove: int):
     conn = create_connection()
     conn.database = os.getenv("DB_NAME")
     cursor = conn.cursor(dictionary=True)
 
-    
-    return 1
+    cursor.execute("SELECT * FROM proveedor WHERE idproveedor = %s", (idprove,))
+    prove = cursor.fetchone()
+    conn.close()
+
+    if prove is None:
+        raise HTTPException(status_code=404, detail="persona no encontrada")
+    return prove["idpersona"]
+
+def delete_cliente(idprove: int):
+    #corrigue el que envio es idcliente
+    conn = create_connection()
+    conn.database = os.getenv("DB_NAME")
+    cursor = conn.cursor()
+    idpersona= int(select_personaidproveedor(idprove=idprove)) 
+    try:
+        # Actualiza el estado del cliente de 1 a 0 (desactivado)
+        cursor.execute('''UPDATE proveedor SET estado = 0
+                          WHERE idproveedor = %s
+                        
+                        ''', (idpersona,))
+        conn.commit()
+    except mysql.connector.Error as err:
+        conn.rollback()
+        raise HTTPException(status_code=400, detail=str(err))
+    finally:
+        cursor.close()
+        conn.close()
+    return {"message": "El proveedor se eliminó con éxito"}

@@ -71,12 +71,8 @@ def update_cliente(idcliente: int, clien: ClienteCreate):
     )
     idper =int(select_personaidcliente(idcliente=idcliente))  # Obtener el idpersona del cliente en la base de datos
     
-    print(idper) 
-    # Actualiza de la persona
-    print(clien)
     # Actualiza la información de la persona
     persona.update_persona(idpersona=idper, person=person_dt)
-    print("hola") 
     
     try:
         # Actualizar preferencias del cliente en la base de datos
