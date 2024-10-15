@@ -5,8 +5,10 @@ from pydantic import BaseModel
 from models.usuario import UsuarioCreate,UsuarioCrear,UsuarioAcceso
 from models.cliente import ClienteCreate
 from models.proveedor import ProveedorCreate
+from models.almacen import AlmacenCreate
+ 
 from models.rol import RolCreate
-from cruds import usuario, rol,cliente,proveedor,persona
+from cruds import usuario, rol,cliente,proveedor,almacen
 from database import  create_database, create_tables_and_insert_data,create_connection
 app = FastAPI()
 
@@ -161,20 +163,19 @@ def eliminar_rol(idrol: int):
 def listar_clientes():
     return cliente.read_clientes()
 
-
 @app.post("/api/cliente/")
-def crear_cliente(clien: ClienteCreate):
-    print("Datos recibidos")
+def create_cliente(clien: ClienteCreate):
     return cliente.create_cliente(clien)
 
+# Obtener un cliente por su ID
 @app.put("/api/cliente/{idcliente}")
-def updateCliente(idcliente: int, clien: ClienteCreate):
+def update_cliente(idcliente: int, clien: ClienteCreate):
     
     return cliente.update_cliente(idcliente, clien)
 
 # Eliminar un cliente
 @app.delete("/api/cliente/{idcliente}")
-def eliminar_cliente(idcliente: int):
+def delete_cliente(idcliente: int):
     return cliente.delete_cliente(idcliente)
 
 # Listar todos los proveedor
@@ -182,10 +183,66 @@ def eliminar_cliente(idcliente: int):
 def listar_proveedores():
     return proveedor.read_proveedores()
 
-# Listar todos los proveedor
+# crear proveedor
 @app.post("/api/proveedor/")
-def crear_proveedor(prove: ProveedorCreate):
+def create_proveedor(prove: ProveedorCreate):
     return proveedor.create_proveedor(prove)
+
+# Obtener un cliente por su ID
+@app.put("/api/proveedor/{idproveedor}")
+def update_proveedor(idproveedor: int, prove: ProveedorCreate):
+    return proveedor.update_proveedor(idproveedor, prove)
+
+# Eliminar un proveedor
+@app.delete("/api/proveedor/{idproveedor}")
+def delete_proveedor(idproveedor: int):
+    return proveedor.delete_proveedor(idproveedor)
+
+
+# Listar todos los almacen
+@app.get("/api/almacen/")
+def listar_almacenes():
+    return almacen.read_almacenes()
+
+# crear almacen
+@app.post("/api/almacen/")
+def create_almacen(alma: AlmacenCreate):
+    return almacen.create_almacen(alma)
+
+# Obtener un almacen por su ID
+@app.put("/api/almacen/{idalmacen}")
+def update_almacen(idalmacen: int, alma: AlmacenCreate):
+    return almacen.update_almacen(idalmacen, alma)
+
+# Eliminar un almacen
+@app.delete("/api/almacen/{idalmacen}")
+def delete_almacen(idalmacen: int):
+    return almacen.delete_almacen(idalmacen)
+
+
+#SECCION ABASTECIMIENTO
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Listar todos los vehiculo
+#    @app.get("/api/vehiculo/")
+#    def listar_vehiculos():
+#        return almacen.read_vehiculos()
+
 
 
 #Para el modulo de vehiculo

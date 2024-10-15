@@ -56,7 +56,7 @@ def read_proveedores():
     conn.close()
     return provedores
 
-def update_proveedores(idprove: int,prove: ProveedorCreate):
+def update_proveedor(idprove: int,prove: ProveedorCreate):
     conn = create_connection()
     conn.database = os.getenv("DB_NAME")
     cursor = conn.cursor()
@@ -104,7 +104,7 @@ def select_personaidproveedor(idprove: int):
         raise HTTPException(status_code=404, detail="persona no encontrada")
     return prove["idpersona"]
 
-def delete_cliente(idprove: int):
+def delete_proveedor(idprove: int):
     #corrigue el que envio es idcliente
     conn = create_connection()
     conn.database = os.getenv("DB_NAME")
