@@ -97,7 +97,7 @@ def create_tables_and_insert_data():
                         estado_tipo INT
                     )''')
 
-    # Crear tabla de Producto
+    # Crear tabla de Producto   --VARBINARY(10000)Limitar a 10,000 bytes
     cursor.execute('''CREATE TABLE IF NOT EXISTS Producto(
                         idProducto INT AUTO_INCREMENT PRIMARY KEY,
                         idtipo INT,
@@ -105,6 +105,7 @@ def create_tables_and_insert_data():
                         stock_producto INT,
                         unidad_de_medida VARCHAR(20),
                         precio_producto DECIMAL(10,2),
+                        imagen BLOB, 
                         estado INT,
                         FOREIGN KEY (idtipo) REFERENCES Tipo(idTipo)
                     )''')

@@ -20,10 +20,10 @@ def create_producto(producto: ProductoCreate):
         if tipo_existente is None:
             raise HTTPException(status_code=404, detail="Tipo no encontrado")
 
-        # Insertar el producto
-        cursor.execute('''INSERT INTO Producto (idtipo, nombre_producto, stock_producto, unidad_de_medida, precio_producto, estado)
-                          VALUES (%s, %s, %s, %s, %s, %s)''',
-                          (producto.idtipo, producto.nombre_producto, producto.stock_producto, producto.unidad_de_medida, producto.precio_producto, producto.estado))
+        # Insertar el producto (asegúrate de que todos los valores están presentes)
+        cursor.execute('''INSERT INTO Producto (idtipo, nombre_producto, stock_producto, unidad_de_medida, precio_producto, imagen, estado)
+                          VALUES (%s, %s, %s, %s, %s, %s, %s)''',
+                          (producto.idtipo, producto.nombre_producto, producto.stock_producto, producto.unidad_de_medida, producto.precio_producto, producto.imagen, producto.estado))
         conn.commit()
     except mysql.connector.Error as err:
         conn.rollback()
@@ -33,7 +33,6 @@ def create_producto(producto: ProductoCreate):
         conn.close()
 
     return {"message": "Producto creado con éxito"}
-
 
 # Listar todos los productos
 def list_productos():
@@ -65,8 +64,6 @@ def get_producto(idproducto: int):
 
     return producto
 
-
-
 # Actualizar un producto por su ID (permitiendo cambiar de tipo)
 def update_producto(idproducto: int, producto: ProductoCreate):
     conn = create_connection()
@@ -83,9 +80,9 @@ def update_producto(idproducto: int, producto: ProductoCreate):
 
         # Actualizar el producto
         cursor.execute('''UPDATE Producto
-                          SET idtipo = %s, nombre_producto = %s, stock_producto = %s, unidad_de_medida = %s, precio_producto = %s, estado = %s
+                          SET idtipo = %s, nombre_producto = %s, stock_producto = %s, unidad_de_medida = %s, precio_producto = %s, imagen = %s, estado = %s
                           WHERE idProducto = %s''',
-                          (producto.idtipo, producto.nombre_producto, producto.stock_producto, producto.unidad_de_medida, producto.precio_producto, producto.estado, idproducto))
+                          (producto.idtipo, producto.nombre_producto, producto.stock_producto, producto.unidad_de_medida, producto.precio_producto, producto.imagen, producto.estado, idproducto))
         conn.commit()
     except mysql.connector.Error as err:
         conn.rollback()
@@ -95,7 +92,6 @@ def update_producto(idproducto: int, producto: ProductoCreate):
         conn.close()
 
     return {"message": "Producto actualizado con éxito"}
-
 
 # Eliminar (desactivar) un producto por su ID
 def delete_producto(idproducto: int):

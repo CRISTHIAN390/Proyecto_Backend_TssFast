@@ -77,91 +77,83 @@ class LoginData(BaseModel):
 def login(login_data: LoginData):
     return usuario.login_users(login_data.email, login_data.password)
 
-
-# Usuarios
+# ============================================
+# USUARIOS
+# ============================================
 # Crear un nuevo usuario
 @app.post("/api/usuario/")
-def crear_usuario(perso: UsuarioCrear):
+def create_usuario(perso: UsuarioCrear):
     return usuario.create_usuario(perso)
-
 
 # Listar todos los users
 @app.get("/api/usuario/")
-def listar_usuarios():
+def read_usuarios():
     return usuario.read_usuarios()
-
 
 #listar usuarios por rol
 @app.get("/api/usuario/rol/{idrol}")
-def leer_usuarioByRol(idrol: int):
+def usuarioidrol(idrol: int):
     return usuario.read_usuarioByIdRol(idrol)
-
 
 # Obtener un user por su ID
 @app.get("/api/usuario/{idusuario}")
-def selectByusuario(idusuario: int):
+def select_usuario_by_id(idusuario: int):
     return usuario.select_usuario_by_id(idusuario)
-
 
 # Actualizar un user
 @app.put("/api/usuario/{idusuario}")
 def actualizar_usuario(idusuario: int, user: UsuarioCreate):
     return usuario.update_usuario(idusuario, user,False)
 
-
 # Actualizar clave de un usuario
 @app.put("/api/usuario/password/{idusuario}")
 def actualizar_clave(idusuario: int, user: UsuarioCreate):
     return usuario.update_usuario(idusuario, user,True)
 
-
 # Actualizar un acceso rol-estado
 @app.put("/api/usuario/acceso/{idusuario}")
-def actualizar_acceso(idusuario: int, useracc: UsuarioAcceso):
+def update_acceso(idusuario: int, useracc: UsuarioAcceso):
     return usuario.update_acceso(idusuario, useracc)
-
 
 # Eliminar un user
 @app.delete("/api/usuario/{idusuario}")
-def eliminar_usuario(idusuario: int):
+def delete_usuario(idusuario: int):
     return usuario.delete_usuario(idusuario)
 
-
+# ============================================
 # ROLES
+# ============================================
 # Listar todos los roles
 @app.get("/api/rol/")
-def listar_roles():
+def list_roles():
     return rol.list_roles()
-
 
 # Obtener un rol por su ID
 @app.get("/api/rol/{idrol}")
 def get_rol(idrol: int):
     return rol.get_rol(idrol)
 
-
 # Crear un nuevo rol
 @app.post("/api/rol/")
-def crear_rol(roll: RolCreate):
-    return rol.create_role(roll)
-
+def create_role(roll: RolCreate):
+    return rol.create_rol(roll)
 
 # Actualizar un rol
 @app.put("/api/rol/{idrol}")
-def actualizar_rol(idrol: int, roll: RolCreate):
-    return rol.update_role(idrol, roll)
-
+def update_rol(idrol: int, roll: RolCreate):
+    return rol.update_rol(idrol, roll)
 
 # Eliminar un rol
 @app.delete("/api/rol/{idrol}")
-def eliminar_rol(idrol: int):
+def delete_rol(idrol: int):
     return rol.delete_rol(idrol)
 
-
-#Añadir mas campos
+# ============================================
+# CLIENTES
+# ============================================
 # Listar todos los clientes
 @app.get("/api/cliente/")
-def listar_clientes():
+def read_clientes():
     return cliente.read_clientes()
 
 @app.post("/api/cliente/")
@@ -171,7 +163,6 @@ def create_cliente(clien: ClienteCreate):
 # Obtener un cliente por su ID
 @app.put("/api/cliente/{idcliente}")
 def update_cliente(idcliente: int, clien: ClienteCreate):
-    
     return cliente.update_cliente(idcliente, clien)
 
 # Eliminar un cliente
@@ -179,6 +170,9 @@ def update_cliente(idcliente: int, clien: ClienteCreate):
 def delete_cliente(idcliente: int):
     return cliente.delete_cliente(idcliente)
 
+# ============================================
+# PROVEEDORES
+# ============================================
 # Listar todos los proveedor
 @app.get("/api/proveedor/")
 def listar_proveedores():
@@ -199,7 +193,9 @@ def update_proveedor(idproveedor: int, prove: ProveedorCreate):
 def delete_proveedor(idproveedor: int):
     return proveedor.delete_proveedor(idproveedor)
 
-
+# ============================================
+# ALMACEN
+# ============================================
 # Listar todos los almacen
 @app.get("/api/almacen/")
 def listar_almacenes():
@@ -220,49 +216,54 @@ def update_almacen(idalmacen: int, alma: AlmacenCreate):
 def delete_almacen(idalmacen: int):
     return almacen.delete_almacen(idalmacen)
 
-
-#SECCION ABASTECIMIENTO
-
+# ============================================
+# PRODUCTOS
+# ============================================
 # Listar todos los productos
-@app.get("/api/productos/")
+@app.get("/api/producto/")
 def list_productos():
     return producto.list_productos()
 # crear producto
-@app.post("/api/productos/")
+@app.post("/api/producto/")
 def create_producto(prod: ProductoCreate):
     return producto.create_producto(prod)
 
 # Obtener un producto por su ID
-@app.put("/api/productos/{idproductos}")
+@app.put("/api/producto/{idproductos}")
 def update_producto(idproductos: int, prod: ProductoCreate):
     return producto.update_producto(idproductos,prod)
 
 # Eliminar un  producto
-@app.delete("/api/productos/{idproductos}")
+@app.delete("/api/producto/{idproductos}")
 def delete_producto(idproductos: int):
     return producto.delete_producto(idproductos)
 
+# ============================================
+# TIPOS
+# ============================================
 # Listar todos los tipos
-@app.get("/api/tipo/")
+@app.get("/api/producto/tipo/")
 def list_tipos():
     return tipo.list_tipos()
 
 # crear producto
-@app.post("/api/tipo/")
+@app.post("/api/producto/tipo/")
 def create_tipo(tip: TipoCreate):
     return tipo.create_tipo(tip)
 
 # Obtener un producto por su ID
-@app.put("/api/tipo/{idtipo}")
+@app.put("/api/producto/tipo/{idtipo}")
 def update_tipo(idtipo: int, tip: TipoCreate):
     return tipo.update_tipo(idtipo,tip)
 
 # Eliminar un  producto
-@app.delete("/api/tipo/{idtipo}")
+@app.delete("/api/producto/tipo/{idtipo}")
 def delete_tipo(idtipo: int):
     return tipo.delete_tipo(idtipo)
 
-
+# ============================================
+# TIPOS
+# ============================================
 
 
 

@@ -5,7 +5,7 @@ from database import create_connection
 from models.rol import RolCreate
 
 # Crear un nuevo rol
-def create_role(rol: RolCreate):
+def create_rol(rol: RolCreate):
     conn = create_connection()
     conn.database = os.getenv("DB_NAME")
     cursor = conn.cursor()
@@ -52,7 +52,7 @@ def get_rol(idrol: int):
     return rol
 
 # Actualizar un rol por su ID
-def update_role(idrol: int, rol: RolCreate):
+def update_rol(idrol: int, rol: RolCreate):
     conn = create_connection()
     conn.database = os.getenv("DB_NAME")
     cursor = conn.cursor()

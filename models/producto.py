@@ -5,6 +5,7 @@ class ProductoCreate(BaseModel):
     nombre_producto: str
     stock_producto: int
     unidad_de_medida: str
-    precio_producto: float 
+    precio_producto: float
+    imagen: bytes
     estado: int
     
