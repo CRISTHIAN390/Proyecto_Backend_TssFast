@@ -6,9 +6,10 @@ from models.usuario import UsuarioCreate,UsuarioCrear,UsuarioAcceso
 from models.cliente import ClienteCreate
 from models.proveedor import ProveedorCreate
 from models.almacen import AlmacenCreate
- 
+from models.producto import ProductoCreate
+from models.tipo import TipoCreate
 from models.rol import RolCreate
-from cruds import usuario, rol,cliente,proveedor,almacen
+from cruds import usuario, rol,cliente,proveedor,almacen,producto,tipo
 from database import  create_database, create_tables_and_insert_data,create_connection
 app = FastAPI()
 
@@ -222,10 +223,44 @@ def delete_almacen(idalmacen: int):
 
 #SECCION ABASTECIMIENTO
 
+# Listar todos los productos
+@app.get("/api/productos/")
+def list_productos():
+    return producto.list_productos()
+# crear producto
+@app.post("/api/productos/")
+def create_producto(prod: ProductoCreate):
+    return producto.create_producto(prod)
 
+# Obtener un producto por su ID
+@app.put("/api/productos/{idproductos}")
+def update_producto(idproductos: int, prod: ProductoCreate):
+    return producto.update_producto(idproductos,prod)
 
+# Eliminar un  producto
+@app.delete("/api/productos/{idproductos}")
+def delete_producto(idproductos: int):
+    return producto.delete_producto(idproductos)
 
+# Listar todos los tipos
+@app.get("/api/tipo/")
+def list_tipos():
+    return tipo.list_tipos()
 
+# crear producto
+@app.post("/api/tipo/")
+def create_tipo(tip: TipoCreate):
+    return tipo.create_tipo(tip)
+
+# Obtener un producto por su ID
+@app.put("/api/tipo/{idtipo}")
+def update_tipo(idtipo: int, tip: TipoCreate):
+    return tipo.update_tipo(idtipo,tip)
+
+# Eliminar un  producto
+@app.delete("/api/tipo/{idtipo}")
+def delete_tipo(idtipo: int):
+    return tipo.delete_tipo(idtipo)
 
 
 
