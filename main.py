@@ -233,8 +233,6 @@ def delete_almacen(idalmacen: int):
 def list_productos():
     return producto.list_productos()
 
-# crear producto
-
 # Modelo del producto
 class ProductoCreate(BaseModel):
     idtipo: int
@@ -251,8 +249,7 @@ def create_producto(
     stock_producto: int = Form(...),
     unidad_de_medida: str = Form(...),
     precio_producto: float = Form(...),
-    file: Optional[UploadFile] = File(None)
-):
+    file: Optional[UploadFile] = File(None)):
     # Crear la instancia del modelo con los datos del formulario
     print("Data recibida")
     producto_model = ProductoCreate(
@@ -266,31 +263,36 @@ def create_producto(
     # Llamar al proceso de guardado
     return producto.proceso_guardado(producto_model, file)
 
+# extraer un  producto
+@app.get("/api/producto/{idproducto}")
+def get_producto(idproducto: int):
+    return producto.get_producto(idproducto)
+
+# Editar Producto
+@app.put("/api/producto/{idproducto}")
+def update_producto(
+    idproducto: int,
+    idtipo: int = Form(...),
+    nombre_producto: str = Form(...),
+    stock_producto: int = Form(...),
+    unidad_de_medida: str = Form(...),
+    precio_producto: float = Form(...),
+    file: Optional[UploadFile] = File(None)):
+    # Crear el modelo con los datos actualizados
+    producto_model = ProductoCreate(
+        idtipo=idtipo,
+        nombre_producto=nombre_producto,
+        stock_producto=stock_producto,
+        unidad_de_medida=unidad_de_medida,
+        precio_producto=precio_producto
+    )
+    # Llamar a la función de actualización
+    return producto.update_producto(idproducto, producto_model, file)
+
 # Eliminar un  producto
-@app.delete("/api/producto/{idproductos}")
-def delete_producto(idproductos: int):
-    return producto.delete_producto(idproductos)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# Obtener un producto por su ID
-@app.put("/api/producto/{idproductos}")
-def update_producto(idproductos: int, prod: ProductoCreate):
-    return producto.update_producto(idproductos,prod)
-
+@app.delete("/api/producto/{idproducto}")
+def delete_producto(idproducto: int):
+    return producto.delete_producto(idproducto)
 
 # ============================================
 # TIPOS
@@ -316,7 +318,7 @@ def delete_tipo(idtipo: int):
     return tipo.delete_tipo(idtipo)
 
 # ============================================
-# TIPOS
+# Abastecimiento
 # ============================================
 
 
