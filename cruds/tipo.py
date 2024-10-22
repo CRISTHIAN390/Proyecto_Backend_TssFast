@@ -40,7 +40,7 @@ def get_tipo(idtipo: int):
     conn.database = os.getenv("DB_NAME")
     cursor = conn.cursor(dictionary=True)
 
-    cursor.execute("SELECT * FROM Tipo WHERE idTipo = %s", (idtipo,))
+    cursor.execute("SELECT * FROM Tipo WHERE idtipo = %s", (idtipo,))
     tipo = cursor.fetchone()
     conn.close()
 
@@ -56,7 +56,7 @@ def update_tipo(idtipo: int, tipo: TipoCreate):
     cursor = conn.cursor()
 
     try:
-        cursor.execute('''UPDATE Tipo SET nombre_tipo = %s, estado_tipo = %s WHERE idTipo = %s''', 
+        cursor.execute('''UPDATE Tipo SET nombre_tipo = %s, estado_tipo = %s WHERE idtipo = %s''', 
                        (tipo.nombre_tipo, tipo.estado_tipo, idtipo))
         conn.commit()
     except mysql.connector.Error as err:
@@ -75,7 +75,7 @@ def delete_tipo(idtipo: int):
     cursor = conn.cursor()
 
     try:
-        cursor.execute('''UPDATE Tipo SET estado_tipo = 0 WHERE idTipo = %s''', (idtipo,))
+        cursor.execute('''UPDATE Tipo SET estado_tipo = 0 WHERE idtipo = %s''', (idtipo,))
         conn.commit()
     except mysql.connector.Error as err:
         conn.rollback()

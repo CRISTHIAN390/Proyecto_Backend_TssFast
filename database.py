@@ -92,22 +92,22 @@ def create_tables_and_insert_data():
     
     # Crear tabla de Tipo
     cursor.execute('''CREATE TABLE IF NOT EXISTS Tipo(
-                        idTipo INT AUTO_INCREMENT PRIMARY KEY,
+                        idtipo INT AUTO_INCREMENT PRIMARY KEY,
                         nombre_tipo VARCHAR(200),
                         estado_tipo INT
                     )''')
 
     # Crear tabla de Producto   --VARBINARY(10000)Limitar a 10,000 bytes
     cursor.execute('''CREATE TABLE IF NOT EXISTS Producto(
-                        idProducto INT AUTO_INCREMENT PRIMARY KEY,
+                        idproducto INT AUTO_INCREMENT PRIMARY KEY,
                         idtipo INT,
                         nombre_producto VARCHAR(200),
                         stock_producto INT,
                         unidad_de_medida VARCHAR(20),
                         precio_producto DECIMAL(10,2),
-                        imagen BLOB, 
+                        urlimagen VARCHAR(200), 
                         estado INT,
-                        FOREIGN KEY (idtipo) REFERENCES Tipo(idTipo)
+                        FOREIGN KEY (idtipo) REFERENCES Tipo(idtipo)
                     )''')
     
     # Crear tabla de Vehiculo

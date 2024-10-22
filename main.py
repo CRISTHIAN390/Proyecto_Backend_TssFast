@@ -1,5 +1,5 @@
 import os
-from fastapi import FastAPI, HTTPException,Depends
+from fastapi import FastAPI, UploadFile, File,Form, HTTPException,Depends
 from fastapi.middleware.cors import CORSMiddleware  # Importa el middleware de CORS
 from pydantic import BaseModel
 from models.usuario import UsuarioCreate,UsuarioCrear,UsuarioAcceso
@@ -11,8 +11,17 @@ from models.tipo import TipoCreate
 from models.rol import RolCreate
 from cruds import usuario, rol,cliente,proveedor,almacen,producto,tipo
 from database import  create_database, create_tables_and_insert_data,create_connection
-app = FastAPI()
 
+#extra
+from fastapi.responses import JSONResponse
+from typing import Optional
+import json
+from fastapi.staticfiles import StaticFiles
+
+
+app = FastAPI()
+# Montar la carpeta img para servir archivos estáticos
+app.mount("/img", StaticFiles(directory="img"), name="img")
 
 @app.get("/usuarios/count")
 def get_user_count():
@@ -223,20 +232,65 @@ def delete_almacen(idalmacen: int):
 @app.get("/api/producto/")
 def list_productos():
     return producto.list_productos()
+
 # crear producto
+
+# Modelo del producto
+class ProductoCreate(BaseModel):
+    idtipo: int
+    nombre_producto: str
+    stock_producto: int
+    unidad_de_medida: str
+    precio_producto: float
+
+# Ruta para crear el producto
 @app.post("/api/producto/")
-def create_producto(prod: ProductoCreate):
-    return producto.create_producto(prod)
+def create_producto(
+    idtipo: int = Form(...),
+    nombre_producto: str = Form(...),
+    stock_producto: int = Form(...),
+    unidad_de_medida: str = Form(...),
+    precio_producto: float = Form(...),
+    file: Optional[UploadFile] = File(None)
+):
+    # Crear la instancia del modelo con los datos del formulario
+    print("Data recibida")
+    producto_model = ProductoCreate(
+        idtipo=idtipo,
+        nombre_producto=nombre_producto,
+        stock_producto=stock_producto,
+        unidad_de_medida=unidad_de_medida,
+        precio_producto=precio_producto
+    )
+
+    # Llamar al proceso de guardado
+    return producto.proceso_guardado(producto_model, file)
+
+# Eliminar un  producto
+@app.delete("/api/producto/{idproductos}")
+def delete_producto(idproductos: int):
+    return producto.delete_producto(idproductos)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # Obtener un producto por su ID
 @app.put("/api/producto/{idproductos}")
 def update_producto(idproductos: int, prod: ProductoCreate):
     return producto.update_producto(idproductos,prod)
 
-# Eliminar un  producto
-@app.delete("/api/producto/{idproductos}")
-def delete_producto(idproductos: int):
-    return producto.delete_producto(idproductos)
 
 # ============================================
 # TIPOS
